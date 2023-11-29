@@ -23,8 +23,7 @@ public class Order {
     @Column(name = "secureID")
     private String secureID;
 
-    @OneToMany(mappedBy = "order2item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)    private List<OrderItem> orderItems;
 
     @Column(name = "subtotal")
     private BigDecimal subtotal;

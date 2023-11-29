@@ -8,6 +8,9 @@ public enum SortField {
     DISPLAYSIZEINCHES,
     PRICE;
     public static SortField getValue(String name) {
+        if (name == null){
+            return null;
+        }
         return Arrays.stream(SortField.values())
                 .filter(value -> value.name().equals(name.toUpperCase()))
                 .findAny()

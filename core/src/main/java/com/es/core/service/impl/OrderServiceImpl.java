@@ -51,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
         order.setTime(new Time(Instant.now().toEpochMilli()));
         order.setStatus(OrderStatus.NEW);
         order.getOrderItems().stream()
-                .forEach(item -> stockDao.reserve(item.getPhone().getId(), item.getQuantity()));
+                .forEach(item -> stockDao.reserve(item.getPhone().getId(), (long) item.getQuantity()));
         order.setSecureID(UUID.randomUUID().toString());
         orderDao.save(order);
         cartService.clear();
@@ -66,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
                 .map(cartItem -> {
                     OrderItem orderItem = new OrderItem();
                     orderItem.setPhone(cartItem.getPhone());
-                    orderItem.setQuantity(cartItem.getQuantity());
+                    orderItem.setQuantity(Math.toIntExact(cartItem.getQuantity()));
                     orderItem.setOrder(order);
                     return orderItem;
                 })
