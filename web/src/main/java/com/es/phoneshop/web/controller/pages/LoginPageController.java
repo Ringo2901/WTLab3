@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 @Controller
 @RequestMapping(value = "/signIn")
@@ -18,7 +19,9 @@ public class LoginPageController {
 
     @GetMapping
     public String loginPage(HttpServletRequest request) {
-        request.getSession().setAttribute("referer", request.getHeader("Referer"));
+        if (!Objects.equals(request.getHeader("Referer"), "http://localhost:8080/phoneshop-web/signIn")) {
+            request.getSession().setAttribute("referer", request.getHeader("Referer"));
+        }
         return "login";
     }
 

@@ -1,5 +1,6 @@
 package com.es.core.dao.impl;
 
+import com.es.core.dao.OrderItemDao;
 import com.es.core.entity.order.Order;
 import com.es.core.entity.order.OrderStatus;
 import com.es.core.dao.OrderDao;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +19,8 @@ import java.util.Optional;
 public class OrderDaoImpl implements OrderDao {
     private final SessionFactory sessionFactory;
 
+    @Resource
+    private OrderItemDao orderItemDao;
     @Autowired
     public OrderDaoImpl() {
         sessionFactory = HibernateSessionFactoryUtil.getSessionFactory();
@@ -25,18 +29,23 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public Optional<Order> getById(Long key) {
         try (Session session = sessionFactory.openSession()) {
-            return Optional.ofNullable(session.find(Order.class, key));
+            Optional<Order> order = Optional.ofNullable(session.find(Order.class, key));
+            order.ifPresent(value -> value.setOrderItems(orderItemDao.getOrderItems(value.getId())));
+            return order;
         }
     }
 
     @Override
     public Optional<Order> getBySecureID(String secureID) {
+
         try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM Order WHERE secureID = :secureID", Order.class)
-                    .setParameter("secureID", secureID)
-                    .getResultList()
-                    .stream()
-                    .findAny();
+            Optional<Order> order = session.createQuery("FROM Order WHERE secureID = :secureID", Order.class)
+                .setParameter("secureID", secureID)
+                .getResultList()
+                .stream()
+                .findAny();
+            order.ifPresent(value -> value.setOrderItems(orderItemDao.getOrderItems(value.getId())));
+            return order;
         }
     }
 

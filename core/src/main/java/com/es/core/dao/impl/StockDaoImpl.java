@@ -27,7 +27,6 @@ public class StockDaoImpl implements StockDao {
             CriteriaQuery<Stock> criteriaQuery = criteriaBuilder.createQuery(Stock.class);
             Root<Stock> root = criteriaQuery.from(Stock.class);
 
-            criteriaQuery.select(root.get("stock"));
             criteriaQuery.where(criteriaBuilder.equal(root.get("phoneId"), phoneId));
 
             Stock availableStock = session.createQuery(criteriaQuery).uniqueResult();
