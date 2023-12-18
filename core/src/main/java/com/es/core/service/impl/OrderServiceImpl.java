@@ -11,9 +11,10 @@ import com.es.core.dao.StockDao;
 import com.es.core.service.OrderService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
@@ -30,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderDao orderDao;
     @Resource
     private CartService cartService;
-    @Value("${delivery.price}")
+    @Value("5")
     private BigDecimal deliveryPrice;
 
     @Override

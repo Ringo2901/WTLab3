@@ -6,6 +6,8 @@ import com.es.core.entity.cart.Cart;
 import com.es.core.entity.cart.CartItem;
 import com.es.core.entity.order.OutOfStockException;
 import com.es.core.service.CartService;
+import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -16,8 +18,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class HttpSessionCartService implements CartService {
-    @Resource
-    private HttpSession httpSession;
+    @Autowired
+    ObjectFactory<HttpSession> httpSessionFactory;
     @Resource
     private PhoneDao phoneDao;
     @Resource
@@ -26,6 +28,7 @@ public class HttpSessionCartService implements CartService {
 
     @Override
     public Cart getCart() {
+        HttpSession httpSession = httpSessionFactory.getObject();
         Cart cart = (Cart) httpSession.getAttribute(CART_SESSION_ATTRIBUTE);
         if (cart == null) {
             cart = new Cart();
@@ -103,9 +106,5 @@ public class HttpSessionCartService implements CartService {
                     else return item.getPhone().getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add));
-    }
-
-    public void setHttpSession(HttpSession httpSession) {
-        this.httpSession = httpSession;
     }
 }
